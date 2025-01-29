@@ -47,14 +47,35 @@ class HTMLRenderer:
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{title}</title>
     <style>
+        :root {{
+            --bg-color: #fff;
+            --text-color: #292929;
+            --meta-color: #757575;
+            --border-color: #eee;
+            --blockquote-color: #666;
+            --code-bg: #f8f8f8;
+            --link-color: #1a8917;
+        }}
+        
+        [data-theme="dark"] {{
+            --bg-color: #1a1a1a;
+            --text-color: #e0e0e0;
+            --meta-color: #a0a0a0;
+            --border-color: #333;
+            --blockquote-color: #999;
+            --code-bg: #2d2d2d;
+            --link-color: #4CAF50;
+        }}
+        
         body {{
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
             line-height: 1.6;
-            color: #292929;
+            color: var(--text-color);
             max-width: 700px;
             margin: 0 auto;
             padding: 20px;
-            background-color: #fff;
+            background-color: var(--bg-color);
+            transition: all 0.3s ease;
         }}
         h1, h2, h3, h4, h5, h6 {{
             font-weight: 600;
@@ -70,10 +91,10 @@ class HTMLRenderer:
             font-size: 18px;
         }}
         .meta {{
-            color: #757575;
+            color: var(--meta-color);
             font-size: 0.9em;
             margin-bottom: 2em;
-            border-bottom: 1px solid #eee;
+            border-bottom: 1px solid var(--border-color);
             padding-bottom: 1em;
             display: flex;
             justify-content: space-between;
@@ -83,10 +104,10 @@ class HTMLRenderer:
             margin-left: 0;
             padding-left: 20px;
             font-style: italic;
-            color: #666;
+            color: var(--blockquote-color);
         }}
         code {{
-            background-color: #f8f8f8;
+            background-color: var(--code-bg);
             padding: 2px 4px;
             border-radius: 3px;
             font-family: Menlo, Monaco, "Courier New", monospace;
@@ -103,15 +124,59 @@ class HTMLRenderer:
             margin: 2em 0;
         }}
         a {{
-            color: #1a8917;
+            color: var(--link-color);
             text-decoration: none;
         }}
         a:hover {{
             text-decoration: underline;
         }}
+        
+        .theme-toggle {{
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--bg-color);
+            border: 2px solid var(--text-color);
+            color: var(--text-color);
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }}
+        
+        .theme-toggle:hover {{
+            opacity: 0.8;
+        }}
     </style>
+    <script>
+        function toggleTheme() {{
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateButtonText();
+        }}
+        
+        function updateButtonText() {{
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            document.getElementById('theme-toggle').textContent = 
+                currentTheme === 'dark' ? '☀️ Light Mode' : '🌙 Dark Mode';
+        }}
+        
+        // Set initial theme from localStorage or system preference
+        document.addEventListener('DOMContentLoaded', () => {{
+            const savedTheme = localStorage.getItem('theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const theme = savedTheme || (prefersDark ? 'dark' : 'light');
+            document.documentElement.setAttribute('data-theme', theme);
+            updateButtonText();
+        }});
+    </script>
 </head>
 <body>
+    <button onclick="toggleTheme()" id="theme-toggle" class="theme-toggle">🌙 Dark Mode</button>
     <article>
         <h1>{title}</h1>
         <div class="meta">
