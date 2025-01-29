@@ -16,7 +16,7 @@ def extract_video_id(url: str) -> str:
     raise ValueError("Could not extract video ID from URL")
 
 def main():
-    parser = argparse.ArgumentParser(description='Extract and process YouTube video transcripts')
+    parser = argparse.ArgumentParser(description='Extract and process YouTube video transcripts', prog='yt2article')
     parser.add_argument('url', help='YouTube video URL')
     parser.add_argument('--raw', action='store_true', help='Output raw transcript without processing')
     parser.add_argument('--renderer', choices=['html', 'pdf', 'text'], default='html', 
