@@ -27,8 +27,9 @@ class YouTubeExtractor(TranscriptExtractor):
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url, download=False)
             title = info.get('title', 'Untitled Video')
+            channel = info.get('channel', 'Unknown Channel')
         
         # Get transcript
         transcript = YouTubeTranscriptApi.get_transcript(video_id)
         
-        return transcript, title
+        return transcript, title, channel

@@ -17,7 +17,7 @@ class HTMLRenderer:
         self.output_dir = output_dir
         os.makedirs(output_dir, exist_ok=True)
         
-    def render_and_open(self, markdown_text: str, filename: str = "transcript", title: str = "Article") -> str:
+    def render_and_open(self, markdown_text: str, filename: str = "transcript", title: str = "Article", author: str = "AI") -> str:
         """
         Convert markdown to HTML and open it
         
@@ -75,6 +75,8 @@ class HTMLRenderer:
             margin-bottom: 2em;
             border-bottom: 1px solid #eee;
             padding-bottom: 1em;
+            display: flex;
+            justify-content: space-between;
         }}
         blockquote {{
             border-left: 3px solid #292929;
@@ -113,7 +115,8 @@ class HTMLRenderer:
     <article>
         <h1>{title}</h1>
         <div class="meta">
-            <span>{current_date}</span>
+            <span class="date">{current_date}</span>
+            <span class="author">By {author}</span>
         </div>
         {html_content}
     </article>

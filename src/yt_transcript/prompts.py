@@ -1,5 +1,6 @@
-def transcript_prompt(transcript: str) -> str:
-    return f"""<Transcript>
+def transcript_prompt(transcript: str, yt_title: str, yt_channel: str) -> str:
+    return f"""Following is a transcript of a video from YouTube. The video title is {yt_title} and the channel is {yt_channel}. The transcript is as follows:
+<Transcript>
 {transcript}
 </Transcript>
 Transcription note: this automated transcript might not be 100% correct, you can correct it where it makes sense.

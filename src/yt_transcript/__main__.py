@@ -28,9 +28,9 @@ def main():
     try:
         video_id = extract_video_id(args.url)
         extractor = YouTubeExtractor()
-        transcript, video_title = extractor.extract(video_id)
+        transcript, video_title, channel_name = extractor.extract(video_id)
         
-        print("Title:", video_title)
+        print("Title:", video_title, "Channel:", channel_name)
         
         # Use video title as default title if not specified
         if args.title == None:
@@ -47,7 +47,7 @@ def main():
         else:
             # Process with OpenAI
             processor = OpenAIProcessor()
-            processed_text = processor.process_transcript(transcript)
+            processed_text = processor.process_transcript(transcript, video_title, channel_name)
             
             if args.renderer == 'pdf':
                 # Generate PDF and open it
@@ -56,8 +56,10 @@ def main():
                 print(f"PDF generated: {pdf_path}")
             elif args.renderer == 'html':
                 # Generate HTML and open it
+                model_name = processor.model_name
                 renderer = HTMLRenderer(output_dir=args.output_dir)
-                html_path = renderer.render_and_open(processed_text, filename=safe_filename, title=args.title)
+                html_path = renderer.render_and_open(processed_text, filename=safe_filename, title=args.title, 
+                                                   author=f"{channel_name} & {model_name}")
                 print(f"HTML generated: {html_path}")
             elif args.renderer == 'text':
                 print(processed_text)

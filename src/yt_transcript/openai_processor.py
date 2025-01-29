@@ -16,12 +16,14 @@ class OpenAIProcessor:
             print(f"Using OpenAI API base URL: {os.getenv('OPENAI_API_BASE_URL')}")
             print(f"Using OpenAI model name: {os.getenv('OPENAI_MODEL_NAME')}")
         
-    def process_transcript(self, transcript: List[Dict]) -> str:
+    def process_transcript(self, transcript: List[Dict], video_title: str, channel_name: str) -> str:
         """
         Process transcript entries using OpenAI
         
         Args:
             transcript: List of transcript entries
+            video_title: Title of the YouTube video
+            channel_name: Name of the YouTube channel
             
         Returns:
             Processed text from OpenAI
@@ -32,7 +34,9 @@ class OpenAIProcessor:
         response = self.client.chat.completions.create(
             model=self.model_name,
             messages=[
-                {"role": "user", "content": transcript_prompt(transcript=full_text)}
+                {"role": "user", "content": transcript_prompt(transcript=full_text, 
+                                                            yt_title=video_title,
+                                                            yt_channel=channel_name)}
             ]
         )
         
