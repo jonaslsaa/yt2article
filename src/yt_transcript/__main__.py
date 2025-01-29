@@ -6,6 +6,7 @@ from urllib.parse import urlparse, parse_qs
 from .youtube_extractor import YouTubeExtractor
 from .openai_processor import OpenAIProcessor
 from .pdf_renderer import PDFRenderer
+from .html_renderer import HTMLRenderer
 
 def extract_video_id(url: str) -> str:
     """Extract video ID from YouTube URL"""
@@ -19,13 +20,25 @@ def main():
     parser.add_argument('url', help='YouTube video URL')
     parser.add_argument('--raw', action='store_true', help='Output raw transcript without processing')
     parser.add_argument('--pdf', action='store_true', help='Generate and open PDF output')
-    parser.add_argument('--output-dir', default='output', help='Directory for PDF output (default: output)')
+    parser.add_argument('--html', action='store_true', help='Generate and open HTML output')
+    parser.add_argument('--output-dir', default='output', help='Directory for output files (default: output)')
+    parser.add_argument('--title', default='Transcript Article', help='Title for the article (default: Transcript Article)')
     args = parser.parse_args()
     
     try:
         video_id = extract_video_id(args.url)
         extractor = YouTubeExtractor()
-        transcript = extractor.extract(video_id)
+        transcript, video_title = extractor.extract(video_id)
+        
+        print("Title:", video_title)
+        
+        # Use video title as default title if not specified
+        if args.title == 'Transcript Article':
+            args.title = video_title
+            
+        # Create safe filename from title
+        safe_filename = "".join(c for c in video_title if c.isalnum() or c in (' ', '-', '_')).rstrip()
+        safe_filename = safe_filename.replace(' ', '_')
         
         if args.raw:
             # Print raw transcript entries
@@ -40,8 +53,14 @@ def main():
                 # Generate PDF and open it
                 renderer = PDFRenderer(output_dir=args.output_dir)
                 video_id = extract_video_id(args.url)
-                pdf_path = renderer.render_and_open(processed_text, filename=video_id)
+                pdf_path = renderer.render_and_open(processed_text, filename=safe_filename)
                 print(f"PDF generated: {pdf_path}")
+            elif args.html:
+                # Generate HTML and open it
+                renderer = HTMLRenderer(output_dir=args.output_dir)
+                video_id = extract_video_id(args.url)
+                html_path = renderer.render_and_open(processed_text, filename=safe_filename, title=args.title)
+                print(f"HTML generated: {html_path}")
             else:
                 print(processed_text)
             
