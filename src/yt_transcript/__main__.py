@@ -22,7 +22,7 @@ def main():
     parser.add_argument('--renderer', choices=['html', 'pdf', 'text'], default='html', 
                        help='Output renderer to use (default: html)')
     parser.add_argument('--output-dir', default='output', help='Directory for output files (default: output)')
-    parser.add_argument('--title', default='Transcript Article', help='Title for the article (default: Transcript Article)')
+    parser.add_argument('--title', help='Title for the article (defaults to video title)')
     args = parser.parse_args()
     
     try:
@@ -33,7 +33,7 @@ def main():
         print("Title:", video_title)
         
         # Use video title as default title if not specified
-        if args.title == 'Transcript Article':
+        if args.title == None:
             args.title = video_title
             
         # Create safe filename from title
