@@ -33,6 +33,7 @@ class OpenAIProcessor:
         
         response = self.client.chat.completions.create(
             model=self.model_name,
+            temperature=0.6,
             messages=[
                 {"role": "user", "content": transcript_prompt(transcript=full_text, 
                                                             yt_title=video_title,
