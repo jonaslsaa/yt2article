@@ -30,7 +30,9 @@ def main():
         extractor = YouTubeExtractor()
         transcript, video_title, channel_name = extractor.extract(video_id)
         
-        print("Title:", video_title, "Channel:", channel_name)
+        print("Video information:")
+        print(" * Title:", video_title)
+        print(" * Channel:", channel_name)
         
         # Use video title as default title if not specified
         if args.title == None:
