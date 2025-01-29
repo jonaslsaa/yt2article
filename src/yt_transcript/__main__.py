@@ -19,8 +19,8 @@ def main():
     parser = argparse.ArgumentParser(description='Extract and process YouTube video transcripts')
     parser.add_argument('url', help='YouTube video URL')
     parser.add_argument('--raw', action='store_true', help='Output raw transcript without processing')
-    parser.add_argument('--pdf', action='store_true', help='Generate and open PDF output')
-    parser.add_argument('--html', action='store_true', help='Generate and open HTML output')
+    parser.add_argument('--renderer', choices=['html', 'pdf', 'text'], default='html', 
+                       help='Output renderer to use (default: html)')
     parser.add_argument('--output-dir', default='output', help='Directory for output files (default: output)')
     parser.add_argument('--title', default='Transcript Article', help='Title for the article (default: Transcript Article)')
     args = parser.parse_args()
@@ -49,19 +49,17 @@ def main():
             processor = OpenAIProcessor()
             processed_text = processor.process_transcript(transcript)
             
-            if args.pdf:
+            if args.renderer == 'pdf':
                 # Generate PDF and open it
                 renderer = PDFRenderer(output_dir=args.output_dir)
-                video_id = extract_video_id(args.url)
                 pdf_path = renderer.render_and_open(processed_text, filename=safe_filename)
                 print(f"PDF generated: {pdf_path}")
-            elif args.html:
+            elif args.renderer == 'html':
                 # Generate HTML and open it
                 renderer = HTMLRenderer(output_dir=args.output_dir)
-                video_id = extract_video_id(args.url)
                 html_path = renderer.render_and_open(processed_text, filename=safe_filename, title=args.title)
                 print(f"HTML generated: {html_path}")
-            else:
+            elif args.renderer == 'text':
                 print(processed_text)
             
     except Exception as e:
