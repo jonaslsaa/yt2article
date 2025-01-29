@@ -9,7 +9,7 @@ class OpenAIProcessor:
     """Processes transcripts using OpenAI API"""
     
     def __init__(self):
-        load_dotenv()
+        load_dotenv(override=True)
         self.client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'), base_url=os.getenv('OPENAI_API_BASE_URL'))
         self.model_name = os.getenv('OPENAI_MODEL_NAME')
         if os.getenv('OPENAI_API_BASE_URL'):
