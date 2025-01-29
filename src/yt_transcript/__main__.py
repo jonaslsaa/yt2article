@@ -47,6 +47,7 @@ def main():
             for entry in transcript:
                 print(f"[{entry['start']:.2f}s] {entry['text']}")
         else:
+            print("Processing transcript...")
             # Process with OpenAI
             processor = OpenAIProcessor()
             processed_text = processor.process_transcript(transcript, video_title, channel_name)
