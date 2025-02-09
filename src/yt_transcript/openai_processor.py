@@ -2,6 +2,7 @@ import os
 from typing import List, Dict
 from dotenv import load_dotenv
 from openai import OpenAI
+import re
 
 from .prompts import transcript_prompt
 
@@ -41,4 +42,11 @@ class OpenAIProcessor:
             ]
         )
         
-        return response.choices[0].message.content
+        content = response.choices[0].message.content
+        if '<think>' in content:
+            print("Stripping reasoning tokens...")
+        
+        # Remove content between <think> and </think>
+        content_cleaned = re.sub(r'<think>.*?</think>', '', content, flags=re.DOTALL)
+        
+        return content_cleaned
